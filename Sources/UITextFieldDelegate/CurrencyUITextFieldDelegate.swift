@@ -99,6 +99,9 @@ extension CurrencyUITextFieldDelegate: UITextFieldDelegate {
         // respecting previous selected text range offset from end.
         defer {
             textField.updateSelectedTextRange(lastOffsetFromEnd: lastSelectedTextRangeOffsetFromEnd)
+            // Since we control the textField, we return false here. However, that means standard
+            // editingChanged actions are not fired. We need to fire that manually before returning.
+            textField.sendActions(for: .editingChanged)
         }
         
         guard !string.isEmpty else {
@@ -112,9 +115,6 @@ extension CurrencyUITextFieldDelegate: UITextFieldDelegate {
         
         setFormattedText(in: textField, inputString: string, range: range)
 
-        // Since we control the textField, we return false here. However, that means standard
-        // editingChanged actions are not fired. We need to fire that manually before returning.
-        textField.sendActions(for: .editingChanged)
         return false
     }
 }
